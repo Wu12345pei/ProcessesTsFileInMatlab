@@ -1,0 +1,12 @@
+function [outputArg1,outputArg2] = WaveletCoherence(EMsignal, channel1, channel2)
+%WAVELETCOHERENCE 此处显示有关此函数的摘要
+%   此处显示详细说明
+all_channel = {'Hx', 'Hy', 'Hz', 'Ex', 'Ey'};
+fs = 1/delta_t
+channel_id1 = find(strcmp(all_channel, channel1));
+channel_id2 = find(strcmp(all_channel, channel2));
+EMsignal1 = EMsignal{channel_id1, 1};
+EMsignal2 = EMsignal{channel_id2, 1};
+wcoherence(EMsignal1, EMsignal2, fs);
+end
+
