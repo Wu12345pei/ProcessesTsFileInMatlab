@@ -1,0 +1,11 @@
+fname = 'kap03/kap145as.ts';
+[pos, Time, EMsignal] = TsReaderFunc(fname);
+[Nonstormtimes, Stormtime, NonstormEMsignals, StormEMsignal] = StormDataExtractor(Time, EMsignal);
+figure(1)
+WaveletCoherence(StormEMsignal,'Hx','Ey');
+figure(2)
+plot(0:5:Stormtime(2)-Stormtime(1),StormEMsignal(:,1))
+title('Hx Time Sieres')
+xlabel('Time(s)')
+set(x,)
+ylabel('Hx(nT)')

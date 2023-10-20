@@ -12,6 +12,19 @@ storm_start_time = calculate_time(10, 29, hour_bias, 0, 0);
 storm_lasting_time = storm_lasting_days*24*3600;
 storm_end_time = storm_start_time + storm_lasting_time;
 Stormtime  = [storm_start_time, storm_end_time];
+for i = 1:size(Time,1)
+    for j = 1:size(Time,2)
+        Time_point = Time(i,j);
+        if Time_point>storm_start_time && Time_point<storm_end_time
+           if j == 2 && (Time_point - storm_start_time) > 3600*36
+               Stormtime = [storm_start_time, Time_point];
+           elseif j == 1 && (storm_end_time - Time_point) > 3600*36
+               Stormtime = [Time_point, storm_end_time];
+           end
+        end
+    end
+end
+storm_lasting_days = (Stormtime(2)-Stormtime(1))/24/3600;
 StormEMsignal = DataSlicer(Time, EMsignal, Stormtime);
 for interval_days = -5 * storm_lasting_days : storm_lasting_days : -1 * storm_lasting_days
     non_storm_start_times = storm_start_time + interval_days*24*3600;

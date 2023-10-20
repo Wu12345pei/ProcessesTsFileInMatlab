@@ -1,16 +1,15 @@
-% import calculate_time.*
 
-fname = 'kap03/kap145as.ts';
+fname = 'kap03/kap123as.ts';
 [pos, Time, EMsigal] = TsReaderFunc(fname);
-[Nonstormtimes, Stormtime, NonstormEMsignals, StormEMsignal] = StormDataExtractor(Time, EMsigal);
-% [cfs_storm, periods_storm] = WaveletTransformer(StormEMsignal, 'Hx');
-% [cfs_nonstorm, periods_nonstorm] = WaveletTransformer(NonstormEMsignals{3, 1}, 'Hx');
-% subplot(2, 1, 1);
-% WaveletTimeFreqPlotter(Stormtime, periods_storm, cfs_storm);
-% subplot(2, 1, 2);
-% WaveletTimeFreqPlotter(Stormtime, periods_nonstorm, cfs_nonstorm);
-WaveletCoherence(StormEMsignal, 'Hx', 'Hy');
-%WaveletCoherence(NonstormEMsignals{1, 1}, 'Hx', 'Hy');
+Signalset = SignalSetTransformer(Time(1,:),EMsigal{1});
+
+fname = 'kap03/kap175as.ts';
+[pos_ref, Time_ref, EMsigal_ref] = TsReaderFunc(fname);
+Signalset_ref = SignalSetTransformer(Time_ref(1,:),EMsigal_ref{1});
 
 
-   
+
+% [Impedance,periods] = ImpedanceCalculaterBIRRP(Signalset, Signalset_ref);
+% [Imp, err] = ImpedancePlotter(Impedance);
+% DatHeaderWritter('try.dat', 20, 20)
+% DatDataWriter('try.dat',periods,'127',0,0,[0,0,0],'TE',Imp,err)
