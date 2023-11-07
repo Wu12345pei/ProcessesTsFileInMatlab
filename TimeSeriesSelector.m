@@ -6,7 +6,7 @@ start_time = Time(1,1);
 for i = 1:length(period)
     period_for_cal = round(period(i,1));
     coherence_at_this_period = wcoh(i, :);
-    window_length = 50*period_for_cal+50000;
+    window_length = 200*period_for_cal;
     n_timestep = window_length / 5;
     if n_timestep < length(coherence_at_this_period)
         score = zeros(1, length(coherence_at_this_period)-n_timestep+1);
