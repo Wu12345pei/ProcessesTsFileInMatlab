@@ -1,0 +1,5 @@
+addpath("../CalculateZ")
+addpath("../DataProcess")
+addpath("../ReadData")
+addpath("../Plotter")
+addpath("../kap03")

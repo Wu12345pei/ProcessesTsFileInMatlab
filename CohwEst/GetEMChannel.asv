@@ -1,0 +1,13 @@
+sampling_freq = 0.2;
+if pick_storm == 0 
+    test_sig = NonstormEMsignals{1};
+else
+    test_sig = StormEMsignal;
+end
+[s_hy,~,~] = stft(test_sig(:,2),sampling_freq,"Window",hann(256,"periodic")); 
+[s_ex,f,t] = stft(test_sig(:,4),sampling_freq,"Window",hann(256,"periodic"));
+
+f = f(size(f,1)/2+1:end);
+p = 1./f;
+s_hy = s_hy(size(s_hy,1)/2+1:end,:);
+s_ex = s_ex(size(s_ex,1)/2+1:end,:);

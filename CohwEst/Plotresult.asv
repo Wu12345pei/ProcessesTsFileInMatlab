@@ -1,0 +1,11 @@
+% 对每个频率，计算
+errorbar(b0_list,b0err_list)
+hold on;
+errorbar(bm_list,bmerr_list)
+hold on;
+errorbar(bi_list,bierr_list) 
+% 对不同时间段计算
+% 画图
+
+% 对不同台站计算
+% 画图
