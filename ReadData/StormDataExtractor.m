@@ -1,3 +1,4 @@
+
 function [Nonstormtimes, Stormtime, NonstormEMsignals, StormEMsignal] = StormDataExtractor(Time, EMsignal)
 % 此函数用于将读取的数据分为磁暴时期数据和非磁暴时期数据，输入参数为台站记录时间片
 % 段，台站记录的电磁信号数据，输出参数为非磁暴和磁暴时期的记录时间片段，非磁暴和磁

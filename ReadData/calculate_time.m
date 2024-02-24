@@ -1,4 +1,5 @@
- function [time] = calculate_time(month, date, hour, minute, second)
+
+function [time] = calculate_time(month, date, hour, minute, second)
 %CALCULATE_TIME 此处显示有关此函数的摘要
 %   此处显示详细说明
 if month == 10

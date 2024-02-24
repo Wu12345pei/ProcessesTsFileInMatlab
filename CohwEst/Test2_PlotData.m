@@ -2,7 +2,7 @@ clc;
 clear;
 run("AddPath.m")
 
-station_id = 148;
+station_id = 145;
 run("ReadSignal.m");
 
 pick_storm = 0;
@@ -16,7 +16,7 @@ run("CalculateCoherence.m")
 
 run("GetScore.m")
 
-s = 0;
+s = 0.5;
 run("SelectSignalByScore.m")
 
 run("PlotData.m")
