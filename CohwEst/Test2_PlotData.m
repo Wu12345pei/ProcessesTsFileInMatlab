@@ -2,21 +2,40 @@ clc;
 clear;
 run("AddPath.m")
 
-station_id = 145;
+station_id = 133;
 run("ReadSignal.m");
 
 pick_storm = 0;
-nonstorm_index = 3;
-run("GetEMChannel.m")
-
-index = 10;
-p(index)
-
-run("CalculateCoherence.m")
-
-run("GetScore.m")
-
-s = 0.5;
-run("SelectSignalByScore.m")
-
-run("PlotData.m")
+if pick_storm == 0
+    for i =1:length(Nonstormtimes)
+        nonstorm_index = i;
+        run("GetEMChannel.m")
+        
+        index = 10;
+        p(index)
+        
+        run("CalculateCoherence.m")
+        
+        run("GetScore.m")
+        
+        s = 0.8;
+        run("SelectSignalByScore.m")
+        X(:,3) = X(:,2)./X(:,1);
+        run("PlotData.m")
+        hold on;
+    end
+else
+    run("GetEMChannel.m")
+        
+        index = 10;
+        p(index)
+        
+        run("CalculateCoherence.m")
+        
+        run("GetScore.m")
+        
+        s = 0.8;
+        run("SelectSignalByScore.m")
+        X(:,3) = X(:,2)./X(:,1);
+        run("PlotData.m")
+end

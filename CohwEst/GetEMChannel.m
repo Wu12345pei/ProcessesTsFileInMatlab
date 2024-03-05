@@ -1,7 +1,7 @@
 sampling_freq = 0.2;
 if pick_storm == 0 
     test_sig = NonstormEMsignals{nonstorm_index};
-elseif pick_storm ==1
+elseif pick_storm == 1
     test_sig = StormEMsignal;
 else
     test_sig = cat(1,NonstormEMsignals{1},StormEMsignal);

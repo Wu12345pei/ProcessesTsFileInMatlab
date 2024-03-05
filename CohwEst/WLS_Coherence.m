@@ -3,7 +3,7 @@ residual = zeros(length(X(:,1)),1);
 vid = [];
 goodpoint = [];
 for it = 1:max_it
-    weight = Huber(it,residual).*score_use;
+    weight = Huber(it,residual).*score_use.^2;
     bi = dot(X(:,2).*weight,X(:,1))/dot(X(:,1).*weight,X(:,1));
     residual = X(:,2) - X(:,1)*bi;
     if it == max_it - 1
@@ -11,7 +11,7 @@ for it = 1:max_it
             if weight(id)>1e-4
                 vid = cat(1,vid,[id]);
             end
-            if weight(id)==score_use(id);
+            if weight(id)==score_use(id)^2
                 goodpoint = cat(1,goodpoint,[id]);
             end
         end
