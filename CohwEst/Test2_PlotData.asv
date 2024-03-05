@@ -1,0 +1,27 @@
+clc;
+clear;
+run("AddPath.m")
+
+station_id = 148;
+run("ReadSignal.m");
+
+pick_storm = 1;
+for
+nonstorm_index = 6;
+run("GetEMChannel.m")
+
+index = 10;
+p(index)
+
+run("CalculateCoherence.m")
+
+run("GetScore.m")
+
+s = 0.8;
+run("SelectSignalByScore.m")
+
+run("PlotData.m")
+hold on;
+Z = 0.9;
+line([0 150],[0 150*Z]);
+hold on;

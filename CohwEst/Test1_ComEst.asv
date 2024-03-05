@@ -1,5 +1,9 @@
+clc;
+clear;
 run("AddPath.m")
+station_id = 133;
 run("ReadSignal.m");
+pick_storm = 1;
 index_start = 2;
 index_end = 10;
 b0_list = zeros(index_end-index_start+1,1);
@@ -50,3 +54,4 @@ for index = index_start:index_end
         bierr_list(index-1) = errori;
         p_list(index-1) = p(index);
 end
+run("Plotresult.m")
