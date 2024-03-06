@@ -11,7 +11,7 @@ if pick_storm == 0
         nonstorm_index = i;
         run("GetEMChannel.m")
         
-        index = 10;
+        index = 9;
         p(index)
         
         run("CalculateCoherence.m")
@@ -27,14 +27,14 @@ if pick_storm == 0
 else
     run("GetEMChannel.m")
         
-        index = 10;
+        index = 8;
         p(index)
         
         run("CalculateCoherence.m")
         
         run("GetScore.m")
         
-        s = 0.8;
+        s = 0;
         run("SelectSignalByScore.m")
         X(:,3) = X(:,2)./X(:,1);
         run("PlotData.m")
