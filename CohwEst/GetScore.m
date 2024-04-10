@@ -10,6 +10,7 @@ for i = 1:length(score)
     end
     column_end = round(t(i)/5);
     score(i) = mean(wcoh(row,column_begin:column_end));
+%     score(i) = abs(s_ex(index,i)*conj(s_hy(index,i)))/abs(s_ex(index,i))/abs(s_hy(index,i));
     phase(i) = mean(angle(wcs(row,column_begin:column_end)));
     if score(i)<0.5
         colorlist(i,:) = [0,0,0];

@@ -3,7 +3,7 @@ residual = zeros(length(X(:,1)),1);
 vid = [];
 goodpoint = [];
 for it = 1:max_it
-    weight = Huber(it,residual).*score_use.^2;
+    weight = Huber(it,residual).*score_use;
     bi = dot(X(:,2).*weight,X(:,1))/dot(X(:,1).*weight,X(:,1));
     residual = X(:,2) - X(:,1)*bi;
     if it == max_it - 1

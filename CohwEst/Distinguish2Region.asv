@@ -125,15 +125,15 @@ if plo
     Median_reliable = median(reliable_data(:,3));
     Median_reliable_X = median(reliable_data(:,1));
     R1 = reliable_data(:,3);
-    histogram(R1,'BinWidth',Median_reliable/3,'Normalization','probability')
-    xlabel('Pre selected','FontSize',20)
+    histogram(R1,'BinWidth',Median_reliable/5,'Normalization','probability')
+    xlabel('Pre selected','FontSize',)
     ax2 = nexttile;
-    G_a = Gooddata(Gooddata(:,1)<=2500*Median_reliable_X,:);
+    G_a = Gooddata(Gooddata(:,1)<=5*Median_reliable_X,:);
     G_b = Gooddata(Gooddata(:,3)<=2.5*Median_reliable,:);
     G = intersect(G_a,G_b,"rows");
     G1 = G(:,3);
-    histogram(G1,'BinWidth',Median_reliable/3,'Normalization','probability')
-    xlabel('Storm data','FontSize',20)
+    histogram(G1,'BinWidth',Median_reliable/5,'Normalization','probability')
+    xlabel('Storm data')
     linkaxes([ax1 ax2],'x')
     figure(5)
     histogram(ureliable_data(:,3),'BinWidth',Median_reliable/5,'Normalization','probability')

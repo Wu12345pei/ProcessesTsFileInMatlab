@@ -10,7 +10,7 @@ bmerr_list = zeros(index_end-index_start+1,1);
 bierr_list = zeros(index_end-index_start+1,1);
 p_list = zeros(index_end-index_start+1,1);
 for index = index_start:index_end       
-    Datapoints = zeros(0,2);
+    Datapoints = zeros(0,5);
     wcohpoints = zeros(0,1);
     if pick_storm == 0
         for i =1:length(Nonstormtimes)
