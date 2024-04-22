@@ -1,0 +1,11 @@
+global NonstormEMsignals;
+global StormEMsignal;
+global s_hx;
+global s_hy;
+global s_ex;
+global s_ey;
+global score_hxey;
+global score_hyex;
+global sig;
+global t;
+global p;

@@ -1,29 +1,42 @@
-max_it = 80;
-residual = zeros(length(X(:,1)),1);
-vid = [];
-goodpoint = [];
-for it = 1:max_it
-    weight = Huber(it,residual);
-    bm = dot(X(:,2).*weight,X(:,1))/dot(X(:,1).*weight,X(:,1));
-    residual = X(:,2) - X(:,1)*bm;
-    if it == max_it - 1
-        for id = 1:length(weight)
-            if weight(id)>1e-4
-                vid = cat(1,vid,[id]);
-            end
-            if weight(id)==1
-                goodpoint = cat(1,goodpoint,[id]);
+function[z,eps_real,eps_imag] = IRLS_Mest(data)
+    h_real = data(:,1);
+    h_imag = data(:,2);
+
+    e_vector = zeros(2*length(h_real),1);
+    b_matrix = zeros(2*length(h_real),2);
+    
+    for i = 1:length(h_real)
+        row = 2*i;
+        b_matrix(row-1,:) = [h_real(i), -h_imag(i)];
+        b_matrix(row,:) = [h_imag(i), h_real(i)];
+        e_vector(row-1,:) = data(i,3);
+        e_vector(row,:) = data(i,4);
+    end
+
+    max_it = 80;
+    residual = zeros(2*length(h_real),1);
+    vid = [];
+    goodpoint = [];
+    for it = 1:max_it
+        weight = Huber(it,residual);
+        z = (b_matrix'*weight*b_matrix)^(-1)*(b_matrix'*weight*e_vector);
+        residual = e_vector - b_matrix*z;
+        if it == max_it - 1
+            for id = 1:length(weight)
+                if weight(id,id)>1e-4
+                    vid = cat(1,vid,[id]);
+                end
+                if weight(id,id)==1
+                    goodpoint = cat(1,goodpoint,[id]);
+                end
             end
         end
     end
+    
+    eps = residual;
+    eps_real = eps(mod((1:length(eps)),2)==0);
+    eps_imag = eps(mod((1:length(eps)),2)==1);
 end
-
-N = length(vid);
-Bmatrix = sqrt(1/dot(X(vid,1),X(vid,1)'));
-Res = norm(X(vid,2)-bm*X(vid,1));
-weightcoeff = 1/length(goodpoint);
-
-errorm = sqrt(N-1)/N*Res*Bmatrix*weightcoeff;
 % choose weight
 function [weight] = Huber(it,residual)
     if it == 1
@@ -37,6 +50,7 @@ function [weight] = Huber(it,residual)
             weight(i) = min([1,weight(i)]);
         end
     end
+    weight = diag(weight);
 end
 
 function [scale] = scale_mad(residual)
