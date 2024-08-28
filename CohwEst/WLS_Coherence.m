@@ -1,30 +1,43 @@
-max_it = 80;
-residual = zeros(length(X(:,1)),1);
-vid = [];
-goodpoint = [];
-for it = 1:max_it
-    weight = Huber(it,residual).*score_use;
-    bi = dot(X(:,2).*weight,X(:,1))/dot(X(:,1).*weight,X(:,1));
-    residual = X(:,2) - X(:,1)*bi;
-    if it == max_it - 1
-        for id = 1:length(weight)
-            if weight(id)>1e-4
-                vid = cat(1,vid,[id]);
-            end
-            if weight(id)==score_use(id)^2
-                goodpoint = cat(1,goodpoint,[id]);
+function[z,eps_real,eps_imag] = WLS_Coherence(data)
+    k=2;
+    h_real = data(:,1);
+    h_imag = data(:,2);
+
+    e_vector = zeros(2*length(h_real),1);
+    b_matrix = zeros(2*length(h_real),2);
+    
+    for i = 1:length(h_real)
+        row = 2*i;
+        b_matrix(row-1,:) = [h_real(i), -h_imag(i)]*data(i,5)^k;
+        b_matrix(row,:) = [h_imag(i), h_real(i)]*data(i,5)^k;
+        e_vector(row-1,:) = data(i,3)*data(i,5)^k;
+        e_vector(row,:) = data(i,4)*data(i,5)^k;
+    end
+
+    max_it = 80;
+    residual = zeros(2*length(h_real),1);
+    vid = [];
+    goodpoint = [];
+    for it = 1:max_it
+        weight = Huber(it,residual);
+        z = (b_matrix'*weight*b_matrix)^(-1)*(b_matrix'*weight*e_vector);
+        residual = e_vector - b_matrix*z;
+        if it == max_it - 1
+            for id = 1:length(weight)
+                if weight(id,id)>1e-4
+                    vid = cat(1,vid,[id]);
+                end
+                if weight(id,id)==1
+                    goodpoint = cat(1,goodpoint,[id]);
+                end
             end
         end
     end
+    
+    eps = residual;
+    eps_real = eps(mod((1:length(eps)),2)==0);
+    eps_imag = eps(mod((1:length(eps)),2)==1);
 end
-
-N = length(vid);
-Bmatrix = sqrt(1/dot(X(vid,1).*(score_use(vid).^0.5),(X(vid,1).*(score_use(vid).^2))'));
-Res = norm((((X(vid,2)-bi*X(vid,1)).^2).*score_use(vid)).^0.5);
-weightcoeff = 1/length(goodpoint);
-
-errori = sqrt(N-1)/N*Res*Bmatrix*weightcoeff;
-
 % choose weight
 function [weight] = Huber(it,residual)
     if it == 1
@@ -38,6 +51,7 @@ function [weight] = Huber(it,residual)
             weight(i) = min([1,weight(i)]);
         end
     end
+    weight = diag(weight);
 end
 
 function [scale] = scale_mad(residual)

@@ -1,4 +1,4 @@
-function[z,eps_real,eps_imag] = IRIS_Mest(data)
+function[z,eps_real,eps_imag] = IRLS_Mest(data)
     h_real = data(:,1);
     h_imag = data(:,2);
 
@@ -31,11 +31,12 @@ function[z,eps_real,eps_imag] = IRIS_Mest(data)
                 end
             end
         end
+        z_err = CalculateError(e_vector,b_matrix,z,length(vid))
     end
     
     eps = residual;
-    eps_real = eps();
-    eps_imag = eps(eps\2==1);
+    eps_real = eps(mod((1:length(eps)),2)==0);
+    eps_imag = eps(mod((1:length(eps)),2)==1);
 end
 % choose weight
 function [weight] = Huber(it,residual)

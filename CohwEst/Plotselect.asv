@@ -1,0 +1,55 @@
+% 创建一个新的图形窗口
+figure('Name', '数据阈值分割散点图', 'NumberTitle', 'off');
+CV_thresthhold = 0.3;
+
+X_decomposed_moving_avg = movmean(X_decomposed(:,1), 10*coherence_window_L);
+X_decomposed_moving_avg_std = std(X_decomposed_moving_avg);
+
+X_diff = X_decomposed(:,1) - X_decomposed_moving_avg;
+% 创建一个 tiledlayout，用于排列子图
+tiledlayout(3, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+
+% 绘制第一幅图
+ax1 = nexttile;
+scatter(Time_list(CV > CV_thresthhold), X_decomposed(CV > CV_thresthhold,1), 'k.', 'DisplayName', ['CV > ' num2str(CV_thresthhold)]);
+hold on;
+scatter(Time_list(CV <= CV_thresthhold), X_decomposed(CV <= CV_thresthhold,1), 'r.', 'DisplayName', ['CV <= ' num2str(CV_thresthhold)]);
+hold off;
+title('CV 分割散点图', 'FontSize', 12, 'FontWeight', 'bold');
+xlabel('时间（s）', 'FontSize', 12, 'FontWeight', 'bold');
+ylabel('CV', 'FontSize', 12, 'FontWeight', 'bold');
+legend('show', 'Location', 'best');
+grid on;
+
+% 绘制第二幅图
+ax2 = nexttile;
+scatter(Time_list(coherence_this_period >= coh_threshold), X_decomposed(coherence_this_period >= coh_threshold, 1), 'r.', 'DisplayName', ['Coherence >= ' num2str(coh_threshold)]);
+hold on;
+scatter(Time_list(coherence_this_period < coh_threshold), X_decomposed(coherence_this_period < coh_threshold, 1), 'k.', 'DisplayName', ['Coherence < ' num2str(coh_threshold)]);
+hold off;
+title('Coherence 分割散点图', 'FontSize', 12, 'FontWeight', 'bold');
+xlabel('时间（s）', 'FontSize', 12, 'FontWeight', 'bold');
+ylabel('降维后的大小', 'FontSize', 12, 'FontWeight', 'bold');
+legend('show', 'Location', 'best');
+grid on;
+
+ax3 = nexttile;
+scatter(Time_list,X_decomposed(:,1),'r.')
+hold on;
+scatter(Time_list,X_decomposed_moving_avg,'k.')
+
+ax4 = nexttile;
+select_list_plus = zeros(Time_list,1);
+select_list_plus(coherence_this_period >= coh_threshold) = select_list_plus(coherence_this_period >= coh_threshold) + 1;
+select_list_plus(CV <= CV_thresthhold) = select_list_plus(CV <= CV_thresthhold) + 1;
+select_list_plus(X_diff<=0) = select_list_plus(X_diff<=0) + 1;
+scatter(Time_list(CV > CV_thresthhold), X_decomposed(CV > CV_thresthhold,1), 'k.', 'DisplayName', ['CV > ' num2str(CV_thresthhold)]);
+hold on;
+scatter(Time_list(CV <= CV_thresthhold), X_decomposed(CV <= CV_thresthhold,1), 'r.', 'DisplayName', ['CV <= ' num2str(CV_thresthhold)]);
+
+
+% 设置所有子图的字体大小和粗细
+set([ax1, ax2], 'FontSize', 12, 'FontWeight', 'bold');
+linkaxes([ax1 ax2 ax3],'x');
+% 设置整体图形的标题
+sgtitle('数据阈值分割散点图', 'FontSize', 14, 'FontWeight', 'bold');

@@ -1,0 +1,16 @@
+function [outputArg1,outputArg2] = CalculateError(inputArg1,inputArg2)
+%CALCULATEERROR 此处显示有关此函数的摘要
+% 自由度n，参数个数p，数据点N
+% n = 2*N，p = 2(二维情况)
+% 输入参数H，设计矩阵（H'H）-1
+% r = E - ZH(待议)
+
+%calculate diag element (H'H)-1
+iiinv = sqrt(abs(diag(inv(H'*H))));
+res = norm(e - H*Z);
+r = sqrt(n -2)/n;
+err = (res / r / (n-len_ivid)) * iiinv;
+
+
+end
+
