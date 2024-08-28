@@ -1,19 +1,16 @@
-function [] = WaveletTimeFreqPlotter(Time, periods, cfs, channel, lim)
+function [] = WaveletTimeFreqPlotter(Time, periods,min_period,max_period, cfs, channel, lim)
 %WAVELETTIMEFREQPLOTTER 此处显示有关此函数的摘要
 %   此处显示详细说明
 if ~exist('channel','var')
     channel = 'Hx';
 end
 if ~exist('lim','var')
-    lim = 50;
+    lim = prctile(abs(cfs(:)),80);
 end
-delta_T = 5;
-timeseries =  Time(1, 1): delta_T : Time(1, 2);
-timeseries = seconds(timeseries);
-startdate = datetime('2003-10-01');
-timeseries = startdate + timeseries;
-periods = log10(periods(1:100));
-cfs = cfs(1:100, :);
+timeseries =  Time;
+periods = seconds(periods);
+cfs = cfs(periods>min_period & periods<max_period, :);
+periods = log10(periods(periods>min_period & periods<max_period));
 hp = pcolor(timeseries,periods,abs(cfs));
 hp.EdgeAlpha = 0;
 ylims = hp.Parent.YLim;
