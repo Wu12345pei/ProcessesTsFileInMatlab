@@ -4,17 +4,19 @@ run("AddPath.m")
 
 %% 输入想要得到的信息
 %% 台站编号，是否为磁暴期间，筛选的小波相干值，周期数
-station_id = 148;                                                                                                                                                                                                                                                                                                               ;
+station_id = 136;                                                                                                                                                                                                                                                                                                               ;
 pick_storm = 0;
-coh_threshold = 0.75;
+coh_threshold = 0.8;
 period_index = 10;
 
 %% 读取数据，以及每个点对应的时间
 [Nonstormtimes, Stormtime, NonstormEMsignals, StormEMsignal] = ReadSignal(station_id);
+nonstorm_days = length(NonstormEMsignals);
+% nonstorm_days = 1;
 if pick_storm == 0
     sig = zeros(0,5);
     Time_list = zeros(0,1);
-    for i = 1:length(NonstormEMsignals)
+    for i = 1:nonstorm_days
         sig = cat(1,sig,NonstormEMsignals{i});
         Time_sig_i = Nonstormtimes(i,:);                       
         Time_sig = Nonstormtimes;
@@ -125,21 +127,21 @@ if pick_storm == 0
     
     linkaxes([ax1,ax2],'x')
     % 
-    % figure;
-    % tiledlayout(2,2)
-    % ax1 = nexttile;
-    % WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'Hx-Ey',1)
-    % 
-    % ax2 = nexttile; 
-    % WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsHx,'Hx')
-    % 
-    % ax3 = nexttile;
-    % WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy,'Ey')
-    % 
-    % ax4 = nexttile;
-    % WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey/Hx')
-    % 
-    % linkaxes([ax1,ax2,ax3,ax4],'x')
+    figure;
+    tiledlayout(2,2)
+    ax1 = nexttile;
+    WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'Hx-Ey',1)
+
+    ax2 = nexttile; 
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsHx,'Hx')
+
+    ax3 = nexttile;
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy,'Ey')
+
+    ax4 = nexttile;
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey/Hx')
+
+    linkaxes([ax1,ax2,ax3,ax4],'x')
     xlim([2.9*10^6 3.4*10^6]);
 end
 
@@ -175,7 +177,7 @@ if pick_storm == 1
     figure;
     tiledlayout(2,2)
     ax1 = nexttile;
-    WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'HxEy',1)
+    WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'CoherenceXY',1)
 
     ax2 = nexttile; 
     WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsHx,'Hx')
@@ -184,7 +186,7 @@ if pick_storm == 1
     WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy,'Ey')
 
     ax4 = nexttile;
-    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey')
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey/Hx')
 
     linkaxes([ax1,ax2,ax3,ax4],'x')
 end
@@ -264,7 +266,7 @@ timepoint_index_selected = find(select_list_plus==3);
 
 run('Plot_select_timepoint.m')
 
-index_to_abandon = timepoint_index_selected(X_decomposed(select_list_plus==3,1)>3000);
+index_to_abandon = timepoint_index_selected(X_decomposed(select_list_plus==3,1)>50000);
 select_list_plus(index_to_abandon) = 0;
 time_point_if_selected = zeros(1,length(data_all));
 for i = 1:length(time_point_if_selected)

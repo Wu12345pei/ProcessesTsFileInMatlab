@@ -4,9 +4,9 @@ run("AddPath.m")
 load("p.mat")
 
 %% 台站编号，为非磁暴期间，筛选的小波相干值，周期数
-station_id = 142;                                                                                                                                                                                                                                                                                                               ;
+station_id = 133;                                                                                                                                                                                                                                                                                                               ;
 pick_storm = 0;
-coh_threshold = 0.75;
+coh_threshold = 0.85;
 
 
 %% 读取非磁暴数据，以及每个点对应的时间
@@ -69,7 +69,7 @@ timepoint_index_selected = find(select_list==2);
 figure;
 scatter(Time_list(timepoint_index_selected),X_decomposed(timepoint_index_selected,1),'filled');
 
-index_to_abandon = timepoint_index_selected(X_decomposed(select_list==2,1)>200);
+index_to_abandon = timepoint_index_selected(X_decomposed(select_list==2,1)>100);
 select_list(index_to_abandon) = 0;
 
 %% 确定不同可以用于计算的时段
@@ -142,5 +142,5 @@ angle_coh_err = rad2deg(sqrt(angle_coh_err));
 
 run('plotZ.m')
 
-run('plotEH')
+run('plotEHinokdata')
 

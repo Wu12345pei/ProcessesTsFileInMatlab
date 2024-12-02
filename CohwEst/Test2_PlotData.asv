@@ -4,17 +4,19 @@ run("AddPath.m")
 
 %% 输入想要得到的信息
 %% 台站编号，是否为磁暴期间，筛选的小波相干值，周期数
-station_id = 148;                                                                                                                                                                                                                                                                                                               ;
+station_id = 136;                                                                                                                                                                                                                                                                                                               ;
 pick_storm = 0;
-coh_threshold = 0.75;
+coh_threshold = 0.8;
 period_index = 10;
 
 %% 读取数据，以及每个点对应的时间
 [Nonstormtimes, Stormtime, NonstormEMsignals, StormEMsignal] = ReadSignal(station_id);
+nonstorm_days = length(NonstormEMsignals);
+% nonstorm_days = 1;
 if pick_storm == 0
     sig = zeros(0,5);
     Time_list = zeros(0,1);
-    for i = 1:length(NonstormEMsignals)
+    for i = 1:nonstorm_days
         sig = cat(1,sig,NonstormEMsignals{i});
         Time_sig_i = Nonstormtimes(i,:);                       
         Time_sig = Nonstormtimes;
@@ -102,31 +104,6 @@ if pick_storm == 0
     [PD_E,PD_H] = CalculatePolarization(Hx,Hy,Ex,Ey,data_all(:,8),Time_sig);
     
     [H,lever_value_real,lever_value_imag] = CalculateHatmatrix(data_all);
-
-    figure;
-    tiledlayout(2,2)
-    ax1 = nexttile;
-    scatter(data_all(data_all(:,9)==1,8),PD_E(data_all(:,9)==1),'k.');
-    hold on;
-    scatter(data_all(data_all(:,9)==1,8),PD_H(data_all(:,9)==1),'red.');
-    
-    
-    ax2 = nexttile;
-    scatter(data_all(data_all(:,9)==0,8),PD_E(data_all(:,9)==0),'k.');
-    hold on;
-    scatter(data_all(data_all(:,9)==0,8),PD_H(data_all(:,9)==0),'red.');
-    
-    ax3 = nexttile;
-    scatter(reliable_data_to_plot(:,8),log(reliable_data_to_plot(:,6)),'r','filled')
-    xlim([min(Time_list) max(Time_list)])
-    
-    
-    ax4 = nexttile;
-    scatter(unreliable_data_to_plot(:,8),log(unreliable_data_to_plot(:,6)),'k','filled')
-    xlim([min(Time_list) max(Time_list)])
-    
-    
-    linkaxes([ax1,ax2,ax3,ax4],'x')
     
     figure;
     ax1 = nexttile;
@@ -150,21 +127,21 @@ if pick_storm == 0
     
     linkaxes([ax1,ax2],'x')
     % 
-    % figure;
-    % tiledlayout(2,2)
-    % ax1 = nexttile;
-    % WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'Hx-Ey',1)
-    % 
-    % ax2 = nexttile; 
-    % WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsHx,'Hx')
-    % 
-    % ax3 = nexttile;
-    % WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy,'Ey')
-    % 
-    % ax4 = nexttile;
-    % WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey/Hx')
-    % 
-    % linkaxes([ax1,ax2,ax3,ax4],'x')
+    figure;
+    tiledlayout(2,2)
+    ax1 = nexttile;
+    WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'Hx-Ey',1)
+
+    ax2 = nexttile; 
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsHx,'Hx')
+
+    ax3 = nexttile;
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy,'Ey')
+
+    ax4 = nexttile;
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey/Hx')
+
+    linkaxes([ax1,ax2,ax3,ax4],'x')
     xlim([2.9*10^6 3.4*10^6]);
 end
 
@@ -200,7 +177,7 @@ if pick_storm == 1
     figure;
     tiledlayout(2,2)
     ax1 = nexttile;
-    WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'HxEy',1)
+    WaveletTimeFreqPlotter(Time_list,period_for_coherence,50,2000,wcoh,'CoherenceXY',1)
 
     ax2 = nexttile; 
     WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsHx,'Hx')
@@ -209,7 +186,7 @@ if pick_storm == 1
     WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy,'Ey')
 
     ax4 = nexttile;
-    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey')
+    WaveletTimeFreqPlotter(Time_list,periods_for_wavelet,50,2000,cfsEy./cfsHx,'Ey/Hx')
 
     linkaxes([ax1,ax2,ax3,ax4],'x')
 end
@@ -277,64 +254,29 @@ colorbar;
 
 linkaxes([ax1 ax2 ax3 ax4 ax5],'x')
 
-figure;
-tiledlayout(4,1)
-ax1 = nexttile;
-scatter(Time_list,Volatility(:,1),'k.')
-hold on;
-scatter(Time_list,X_decomposed(:,1),'r.')
-xline(reliable_data_to_plot(:,8))
 
-ax2 = nexttile;
 %% 计算变异度CV
 CV_thresthhold = 0.3;
 CV = Volatility(:,1)./X_decomposed(:,1);
-
-scatter(Time_list(CV>CV_thresthhold),CV(CV>CV_thresthhold),'k.')
-hold on;
-scatter(Time_list(CV<=CV_thresthhold),CV(CV<=CV_thresthhold ),'r.')
-
-ax3 = nexttile;
-scatter(Time_list(coherence_this_period>=coh_threshold),X_decomposed(coherence_this_period>=coh_threshold,1),'r.')
-hold on;
-scatter(Time_list(coherence_this_period<coh_threshold),X_decomposed(coherence_this_period<coh_threshold,1),'k.')
-xline(reliable_data_to_plot(:,8),Color=[1 0 0])
-xline(unreliable_data_to_plot(:,8))
-
-ax4 = nexttile;
-%% 同时使用CV和coherence筛选合适的时间点
-select_list = zeros(length(Time_list),1); 
-select_list(coherence_this_period>=coh_threshold) = select_list(coherence_this_period>=coh_threshold) + 1;
-select_list(CV<=0.2) = select_list(CV<=0.2) + 1;
-Volatility_timepoint = Volatility(select_list==2,1);
-Volatility_timepoint_index = find(select_list==2);
+run('Plotselect.m')
 
 
-scatter(Time_list(select_list==2,1),X_decomposed(select_list==2,1),'k.');
-xline(reliable_data_to_plot(:,8),Color=[1 0 0])
-xline(unreliable_data_to_plot(:,8))
 
-linkaxes([ax1,ax2,ax3,ax4],'x')
+timepoint_index_selected = find(select_list_plus==3);
 
-figure;
-scatter(Time_list(Volatility_timepoint_index),X_decomposed(Volatility_timepoint_index,1),'filled');
+run('Plot_select_timepoint.m')
 
-index_to_abandon = Volatility_timepoint_index(X_decomposed(select_list==2,1)>1500);
-select_list(index_to_abandon) = 0;
+index_to_abandon = timepoint_index_selected(X_decomposed(select_list_plus==3,1)>40000);
+select_list_plus(index_to_abandon) = 0;
 time_point_if_selected = zeros(1,length(data_all));
 for i = 1:length(time_point_if_selected)
     index_time = find(Time_list==data_all(i,8));
-    time_point_if_selected(i) = select_list(index_time)-1;
+    time_point_if_selected(i) = select_list_plus(index_time)-1;
 end
-
-figure;
-scatter(Normvector(data_all(time_point_if_selected==1,:),1,2),Normvector(data_all(time_point_if_selected==1,:),3,4),'r.');
-hold on;
-scatter(Normvector(data_all(time_point_if_selected~=1,:),1,2),Normvector(data_all(time_point_if_selected~=1,:),3,4),'k.');
 
 %% 在选取的时段内进行傅里叶变换，并计算阻抗
 %% 确定不同可以用于计算的时段
-Time_choosen = Time_list(select_list ==2);
+Time_choosen = Time_list(select_list_plus ==3);
 Time_choosen_extension = [];
 %% 扩充Time_choosen至相邻半个周期
 for Time_index = 1:length(Time_choosen)
@@ -343,16 +285,16 @@ for Time_index = 1:length(Time_choosen)
     Time_i_list = (-half_window_dot:half_window_dot)*5+Time_i;
     Time_choosen_extension = cat(2,Time_choosen_extension,Time_i_list);
 end
-
+Time_choosen_extension = unique(Time_choosen_extension);
 %% 定位至邻近时段的对应频点
 [Data_hxey_all,Data_hyex_all,p,stft_t_gap] = GatherData(station_id,pick_storm,period_index,0);
+[Data_hxey_storm,Data_hyex_storm,~,~] = GatherData(station_id,1,period_index,coh_threshold);
 ok_time_indices = find(ismember(Data_hxey_all(:,8), Time_choosen_extension));
 ok_data = Data_hxey_all(ok_time_indices,:);
-figure;
-scatter(Normvector(ok_data,1,2),Normvector(ok_data,3,4),'r.');
 %% 计算
 [z_ok,~,~,z_ok_err,~] = IRLS_Mest(ok_data);
 [z_all,~,~,z_all_err,~] = IRLS_Mest(Data_hxey_all);
 [z_coh,~,~,zcoh_err,~] = IRLS_Mest(Data_hxey);
 [z_storm,~,~,z_storm_err,~] = IRLS_Mest(Data_hxey_storm);
 %% 鲁棒计算阻抗
+run('PlotEHinokdata')

@@ -20,7 +20,7 @@ k = abs(z_storm(1)+1i*z_storm(2));  % 例如斜率为 2
 x = linspace(0, max(magnetic_field_coh), 100);  % 从 -10 到 10
 % 计算对应的 y 值
 y = k * x;
-plot(x, y, 'g-'); % 使用绿色线条
+plot(x, y, 'b-','DisplayName', 'Calculated from storm data'); % 使用绿色线条
 % 添加标题和轴标签
 title('E-M plot', 'FontSize', 14, 'FontWeight', 'bold');
 xlabel('Magnetic Field', 'FontSize', 12, 'FontWeight', 'bold');
